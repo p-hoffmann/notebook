@@ -1,5 +1,6 @@
 import type { NotebookRecord } from '../types'
 import { NotebookSelect } from './NotebookSelect'
+import { SyncFromRemoteButton } from './SyncFromRemoteButton'
 import './NotebookHeader.scss'
 
 interface NotebookHeaderProps {
@@ -14,6 +15,9 @@ interface NotebookHeaderProps {
   onExport?: () => void
   onToggleShare?: () => void
   isShared: boolean
+  datasetId: string
+  onSyncSuccess: () => Promise<void>
+  onFeedback: (type: 'success' | 'error', message: string) => void
 }
 
 export function NotebookHeader({
@@ -28,6 +32,9 @@ export function NotebookHeader({
   onExport,
   onToggleShare,
   isShared,
+  datasetId,
+  onSyncSuccess,
+  onFeedback,
 }: NotebookHeaderProps) {
   return (
     <div className="notebook-header">
@@ -89,6 +96,13 @@ export function NotebookHeader({
               Delete
             </button>
           )}
+
+          <SyncFromRemoteButton
+            activeNotebook={activeNotebook}
+            datasetId={datasetId}
+            onSyncSuccess={onSyncSuccess}
+            onFeedback={onFeedback}
+          />
         </div>
       </div>
     </div>

@@ -24,21 +24,25 @@ $primary: #000080;
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 8px;
     margin-right: 1rem;
   }
 
   &__btn {
     background-color: transparent;
-    border: none;
+    border: 1px solid $primary;
+    border-radius: 6px;
     cursor: pointer;
     color: $primary;
     font-weight: 500;
     font-size: 0.875rem;
-    padding: 4px 12px;
+    padding: 5px 14px;
     outline: none;
+    font-family: inherit;
+    transition: background-color 0.15s ease;
 
-    &:hover {
-      opacity: 0.7;
+    &:hover:not(:disabled) {
+      background-color: rgba(0, 0, 128, 0.05);
     }
 
     &:disabled {

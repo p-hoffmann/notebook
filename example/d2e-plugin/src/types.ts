@@ -16,3 +16,21 @@ export interface NotebookRecord {
   datasetId: string
   userId?: string
 }
+
+export interface RemoteDiffCheckResponse {
+  hasDifferences: boolean
+  reason: string
+}
+
+export interface OverwriteFromRemoteResponse {
+  message: string
+  overwritten: boolean
+  notebookId: string
+}
+
+export interface NotebookTemplateDto {
+  id: string
+  name: string
+  description: string
+  notebookContent: string
+}

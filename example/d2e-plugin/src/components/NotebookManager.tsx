@@ -153,13 +153,17 @@ export function NotebookManager({ datasetId, getToken }: NotebookManagerProps) {
   }, [])
 
   const handleCreateConfirm = useCallback(
-    async (name: string) => {
+    async (name: string, templateId: string | null) => {
       setCreateDialogOpen(false)
       if (!datasetId) return
       try {
-        const empty = createEmptyNotebook()
-        const content = serializeIpynb(empty)
-        const created = await notebookApi.createNotebook(datasetId, name, content)
+        const created = templateId
+          ? await notebookApi.createNotebookFromTemplate(templateId, name, datasetId)
+          : await notebookApi.createNotebook(
+              datasetId,
+              name,
+              serializeIpynb(createEmptyNotebook())
+            )
         setNotebooks((prev) => [...prev, created])
         setActiveNotebook(created)
         showFeedback('success', `Notebook "${name}" created.`)
@@ -190,6 +194,21 @@ export function NotebookManager({ datasetId, getToken }: NotebookManagerProps) {
       showFeedback('error', 'Failed to save notebook.')
     }
   }, [activeNotebook, notebookData, datasetId, showFeedback])
+
+  const handleSyncSuccess = useCallback(async () => {
+    if (!datasetId || !activeNotebook) return
+    try {
+      const list = await notebookApi.getNotebookList(datasetId)
+      setNotebooks(list)
+      const refreshed = list.find((n) => n.id === activeNotebook.id)
+      if (refreshed) {
+        setActiveNotebook(refreshed)
+      }
+    } catch (err) {
+      console.error('Failed to refresh notebooks after sync:', err)
+      showFeedback('error', 'Sync succeeded, but failed to refresh.')
+    }
+  }, [datasetId, activeNotebook, showFeedback])
 
   const handleDeleteConfirm = useCallback(async () => {
     if (!deleteTarget || !datasetId) return
@@ -324,6 +343,9 @@ export function NotebookManager({ datasetId, getToken }: NotebookManagerProps) {
         onExport={activeNotebook ? handleExport : undefined}
         onToggleShare={activeNotebook ? handleToggleShare : undefined}
         isShared={activeNotebook?.isShared ?? false}
+        datasetId={datasetId}
+        onSyncSuccess={handleSyncSuccess}
+        onFeedback={showFeedback}
       />
 
       <input
@@ -387,6 +409,7 @@ export function NotebookManager({ datasetId, getToken }: NotebookManagerProps) {
 
       {createDialogOpen && (
         <CreateNotebookDialog
+          datasetId={datasetId}
           onConfirm={handleCreateConfirm}
           onCancel={() => setCreateDialogOpen(false)}
           existingNames={notebookNames}

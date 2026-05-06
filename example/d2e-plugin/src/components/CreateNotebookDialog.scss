@@ -12,6 +12,7 @@ $primary: #000080;
   &__label {
     font-size: 0.8125rem;
     color: #6b7280;
+    margin-top: 10px;
     font-weight: 400;
   }
 
@@ -22,7 +23,7 @@ $primary: #000080;
     outline: none;
     font-size: 1rem;
     padding: 6px 0;
-    color: #1a1a2e;
+    color: $primary;
     background: transparent;
     font-family: inherit;
   }
@@ -32,4 +33,9 @@ $primary: #000080;
     font-size: 0.8rem;
     text-align: left;
   }
+}
+
+dialog.portal-dialog:has(.create-notebook-dialog__input-wrapper),
+.portal-dialog__content:has(.create-notebook-dialog__input-wrapper) {
+  overflow: visible;
 }

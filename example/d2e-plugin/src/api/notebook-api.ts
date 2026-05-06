@@ -1,5 +1,10 @@
 import { request } from './request'
-import type { NotebookRecord } from '../types'
+import type {
+  NotebookRecord,
+  RemoteDiffCheckResponse,
+  OverwriteFromRemoteResponse,
+  NotebookTemplateDto,
+} from '../types'
 
 export async function getNotebookList(datasetId: string): Promise<NotebookRecord[]> {
   const response = await request.get<NotebookRecord[]>('', {
@@ -42,4 +47,47 @@ export async function deleteNotebook(id: string, datasetId: string): Promise<voi
   await request.delete(`/${id}`, {
     params: { datasetId },
   })
+}
+
+export async function checkRemoteDiff(
+  id: string,
+  datasetId: string
+): Promise<RemoteDiffCheckResponse> {
+  const response = await request.get<RemoteDiffCheckResponse>(
+    `/${id}/remote-diff-check`,
+    { params: { datasetId } }
+  )
+  return response.data
+}
+
+export async function overwriteFromRemote(
+  id: string,
+  datasetId: string
+): Promise<OverwriteFromRemoteResponse> {
+  const response = await request.post<OverwriteFromRemoteResponse>(
+    `/${id}/overwrite-from-remote`,
+    { datasetId }
+  )
+  return response.data
+}
+
+export async function getTemplates(
+  datasetId: string
+): Promise<NotebookTemplateDto[]> {
+  const response = await request.get<NotebookTemplateDto[]>('/templates', {
+    params: { datasetId },
+  })
+  return response.data
+}
+
+export async function createNotebookFromTemplate(
+  templateId: string,
+  name: string,
+  datasetId: string
+): Promise<NotebookRecord> {
+  const response = await request.post<NotebookRecord>(
+    `/templates/${templateId}`,
+    { name, datasetId }
+  )
+  return response.data
 }

@@ -22,7 +22,7 @@
         "researcher": [
           {
             "visible": true,
-            "defaultEnabled": false,
+            "defaultEnabled": true,
             "type": "app",
             "featureFlag": "Webr-notebook",
             "name": "WebR-Notebooks",
